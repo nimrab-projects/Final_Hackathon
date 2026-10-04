@@ -5,53 +5,183 @@ import streamlit as st
 # Configure Streamlit page layout
 st.set_page_config(
     page_title="IdeaForge AI — Multi-Agent Application Architect",
-    page_icon="https://img.icons8.com/isometric-folders/100/brain.png",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS styling for modern executive UI
+# IdeaForge AI Vector Logo SVG definitions
+LOGO_SVG_SIDEBAR = """<svg width="38" height="38" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; flex-shrink:0;">
+  <defs>
+    <linearGradient id="logo-grad-sb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 4L41.3205 14V34L24 44L6.67949 34V14L24 4Z" stroke="url(#logo-grad-sb)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="rgba(99, 102, 241, 0.12)"/>
+  <path d="M24 12V20M24 28V36M14 18L20 22M28 26L34 30M34 18L28 22M20 26L14 30" stroke="url(#logo-grad-sb)" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="4.5" fill="url(#logo-grad-sb)"/>
+  <circle cx="14" cy="18" r="2.5" fill="#818cf8"/>
+  <circle cx="34" cy="18" r="2.5" fill="#c084fc"/>
+  <circle cx="14" cy="30" r="2.5" fill="#c084fc"/>
+  <circle cx="34" cy="30" r="2.5" fill="#f472b6"/>
+  <circle cx="24" cy="12" r="2.5" fill="#818cf8"/>
+  <circle cx="24" cy="36" r="2.5" fill="#f472b6"/>
+</svg>"""
+
+LOGO_SVG_HERO = """<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; flex-shrink:0;">
+  <defs>
+    <linearGradient id="logo-grad-hero" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 4L41.3205 14V34L24 44L6.67949 34V14L24 4Z" stroke="url(#logo-grad-hero)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="rgba(99, 102, 241, 0.15)"/>
+  <path d="M24 12V20M24 28V36M14 18L20 22M28 26L34 30M34 18L28 22M20 26L14 30" stroke="url(#logo-grad-hero)" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="4.5" fill="url(#logo-grad-hero)"/>
+  <circle cx="14" cy="18" r="2.5" fill="#818cf8"/>
+  <circle cx="34" cy="18" r="2.5" fill="#c084fc"/>
+  <circle cx="14" cy="30" r="2.5" fill="#c084fc"/>
+  <circle cx="34" cy="30" r="2.5" fill="#f472b6"/>
+  <circle cx="24" cy="12" r="2.5" fill="#818cf8"/>
+  <circle cx="24" cy="36" r="2.5" fill="#f472b6"/>
+</svg>"""
+
+# Custom CSS styling with theme-aware variables for Light and Dark modes
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    
+    /* System Theme Variable Tokens (Default Dark Theme) */
+    :root {
+        --bg-app: #090d16;
+        --bg-glow-1: rgba(99, 102, 241, 0.12);
+        --bg-glow-2: rgba(168, 85, 247, 0.10);
+        --bg-glow-3: rgba(15, 23, 42, 0.5);
+        
+        --card-bg: rgba(15, 23, 42, 0.75);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        
+        --subcard-bg: rgba(30, 41, 59, 0.45);
+        --subcard-border: rgba(148, 163, 184, 0.15);
+        --subcard-hover-bg: rgba(30, 41, 59, 0.7);
+        --subcard-hover-border: rgba(99, 102, 241, 0.4);
+        
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
+        --accent-indigo: #818cf8;
+        --accent-purple: #c084fc;
+        --accent-pink: #f472b6;
+        
+        --title-gradient: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+        --tab-selected-bg: rgba(99, 102, 241, 0.15);
+        --tab-selected-border: rgba(99, 102, 241, 0.3);
+    }
+
+    /* Light Theme Overrides (System preference or Streamlit light mode) */
+    @media (prefers-color-scheme: light) {
+        :root {
+            --bg-app: #f8fafc;
+            --bg-glow-1: rgba(99, 102, 241, 0.08);
+            --bg-glow-2: rgba(168, 85, 247, 0.06);
+            --bg-glow-3: rgba(241, 245, 249, 0.6);
+            
+            --card-bg: #ffffff;
+            --card-border: rgba(99, 102, 241, 0.2);
+            --card-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08);
+            
+            --subcard-bg: #f1f5f9;
+            --subcard-border: rgba(203, 213, 225, 0.8);
+            --subcard-hover-bg: #e2e8f0;
+            --subcard-hover-border: rgba(79, 70, 229, 0.5);
+            
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-indigo: #4f46e5;
+            --accent-purple: #7c3aed;
+            --accent-pink: #db2777;
+            
+            --title-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+            --tab-selected-bg: rgba(79, 70, 229, 0.1);
+            --tab-selected-border: rgba(79, 70, 229, 0.4);
+        }
+    }
+
+    [data-theme="light"] {
+        --bg-app: #f8fafc;
+        --bg-glow-1: rgba(99, 102, 241, 0.08);
+        --bg-glow-2: rgba(168, 85, 247, 0.06);
+        --bg-glow-3: rgba(241, 245, 249, 0.6);
+        
+        --card-bg: #ffffff;
+        --card-border: rgba(99, 102, 241, 0.2);
+        --card-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08);
+        
+        --subcard-bg: #f1f5f9;
+        --subcard-border: rgba(203, 213, 225, 0.8);
+        --subcard-hover-bg: #e2e8f0;
+        --subcard-hover-border: rgba(79, 70, 229, 0.5);
+        
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #64748b;
+        --accent-indigo: #4f46e5;
+        --accent-purple: #7c3aed;
+        --accent-pink: #db2777;
+        
+        --title-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+        --tab-selected-bg: rgba(79, 70, 229, 0.1);
+        --tab-selected-border: rgba(79, 70, 229, 0.4);
+    }
     
     html, body, [class*="css"] {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Main Background & Ambient Glow */
+    /* Main App Container Background */
     .stApp {
-        background: #090d16;
+        background-color: var(--bg-app);
         background-image: 
-            radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%),
-            radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.5) 0px, transparent 100%);
-        color: #f1f5f9;
+            radial-gradient(at 0% 0%, var(--bg-glow-1) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, var(--bg-glow-2) 0px, transparent 50%),
+            radial-gradient(at 50% 50%, var(--bg-glow-3) 0px, transparent 100%);
+        color: var(--text-primary);
     }
     
-    /* Executive Hero Header */
+    /* Executive Hero Header Card */
     .hero-card {
-        background: rgba(15, 23, 42, 0.7);
+        background: var(--card-bg);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 2.25rem 2.5rem;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        box-shadow: var(--card-shadow);
+    }
+    .hero-header-flex {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 0.5rem;
     }
     .hero-title {
         font-size: 2.5rem;
         font-weight: 800;
         letter-spacing: -0.025em;
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+        background: var(--title-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+        margin: 0;
     }
     .hero-subtitle {
         font-size: 1.05rem;
-        color: #94a3b8;
+        color: var(--text-secondary);
         max-width: 850px;
         line-height: 1.6;
         font-weight: 400;
@@ -65,15 +195,15 @@ st.markdown("""
         margin-top: 1.5rem;
     }
     .agent-card {
-        background: rgba(30, 41, 59, 0.4);
-        border: 1px solid rgba(148, 163, 184, 0.12);
+        background: var(--subcard-bg);
+        border: 1px solid var(--subcard-border);
         border-radius: 12px;
         padding: 1.1rem;
         transition: all 0.2s ease-in-out;
     }
     .agent-card:hover {
-        border-color: rgba(99, 102, 241, 0.4);
-        background: rgba(30, 41, 59, 0.6);
+        border-color: var(--subcard-hover-border);
+        background: var(--subcard-hover-bg);
         transform: translateY(-2px);
     }
     .agent-step {
@@ -81,25 +211,25 @@ st.markdown("""
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #6366f1;
+        color: var(--accent-indigo);
         margin-bottom: 0.2rem;
     }
     .agent-name {
         font-weight: 700;
-        color: #f8fafc;
+        color: var(--text-primary);
         font-size: 0.95rem;
         margin-bottom: 0.3rem;
     }
     .agent-desc {
         font-size: 0.82rem;
-        color: #94a3b8;
+        color: var(--text-secondary);
         line-height: 1.4;
     }
     
     /* MoSCoW Priority Pill Badges */
     .badge-must {
         background: rgba(239, 68, 68, 0.15);
-        color: #fca5a5;
+        color: #ef4444;
         border: 1px solid rgba(239, 68, 68, 0.3);
         padding: 3px 10px;
         border-radius: 20px;
@@ -110,7 +240,7 @@ st.markdown("""
     }
     .badge-should {
         background: rgba(245, 158, 11, 0.15);
-        color: #fcd34d;
+        color: #f59e0b;
         border: 1px solid rgba(245, 158, 11, 0.3);
         padding: 3px 10px;
         border-radius: 20px;
@@ -121,7 +251,7 @@ st.markdown("""
     }
     .badge-could {
         background: rgba(59, 130, 246, 0.15);
-        color: #93c5fd;
+        color: #3b82f6;
         border: 1px solid rgba(59, 130, 246, 0.3);
         padding: 3px 10px;
         border-radius: 20px;
@@ -132,7 +262,7 @@ st.markdown("""
     }
     .badge-future {
         background: rgba(107, 114, 128, 0.15);
-        color: #d1d5db;
+        color: var(--text-secondary);
         border: 1px solid rgba(107, 114, 128, 0.3);
         padding: 3px 10px;
         border-radius: 20px;
@@ -143,7 +273,7 @@ st.markdown("""
     }
     .badge-mvp {
         background: rgba(16, 185, 129, 0.15);
-        color: #6ee7b7;
+        color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.3);
         padding: 3px 10px;
         border-radius: 20px;
@@ -152,17 +282,17 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Executive Section Cards */
+    /* Section & Feature Display Cards */
     .section-card {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1.25rem;
     }
     .feature-card {
-        background: rgba(30, 41, 59, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: var(--subcard-bg);
+        border: 1px solid var(--subcard-border);
         border-radius: 10px;
         padding: 1.2rem;
         margin-bottom: 0.8rem;
@@ -173,31 +303,31 @@ st.markdown("""
         font-family: 'JetBrains Mono', monospace !important;
     }
     
-    /* Subheaders */
+    /* Dynamic theme-aware Subheaders */
     h1, h2, h3, h4 {
-        color: #f8fafc !important;
+        color: var(--text-primary) !important;
         font-weight: 700 !important;
     }
     
     /* Streamlit Tabs Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid var(--card-border);
         padding-bottom: 4px;
     }
     .stTabs [data-baseweb="tab"] {
         height: 44px;
         background-color: transparent;
         border-radius: 8px;
-        color: #94a3b8;
+        color: var(--text-secondary);
         font-weight: 600;
         font-size: 0.9rem;
         padding: 0px 16px;
     }
     .stTabs [aria-selected="true"] {
-        background-color: rgba(99, 102, 241, 0.15) !important;
-        color: #818cf8 !important;
-        border: 1px solid rgba(99, 102, 241, 0.3) !important;
+        background-color: var(--tab-selected-bg) !important;
+        color: var(--accent-indigo) !important;
+        border: 1px solid var(--tab-selected-border) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -216,12 +346,18 @@ if "workflow_in_progress" not in st.session_state:
 
 # Sidebar Configuration
 with st.sidebar:
-    col_sb1, col_sb2 = st.columns([1, 4])
-    with col_sb1:
-        st.image("https://img.icons8.com/isometric-folders/100/brain.png", width=42)
-    with col_sb2:
-        st.markdown("<h3 style='margin:0; padding:0; font-size:1.3rem; font-weight:800;'>IdeaForge AI</h3>", unsafe_allow_html=True)
-        st.caption("Multi-Agent Architecture Engine")
+    st.markdown(
+        f"""
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
+            {LOGO_SVG_SIDEBAR}
+            <div>
+                <h3 style="margin:0; padding:0; font-size:1.3rem; font-weight:800; color:var(--text-primary) !important;">IdeaForge AI</h3>
+                <span style="font-size:0.8rem; color:var(--text-secondary);">Multi-Agent Engine</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
     st.divider()
     st.markdown(
@@ -231,9 +367,12 @@ with st.sidebar:
     st.caption("IdeaForge AI • Production Specification System")
 
 # Main Application Layout Header Card
-st.markdown("""
+st.markdown(f"""
 <div class="hero-card">
-    <div class="hero-title">IdeaForge AI</div>
+    <div class="hero-header-flex">
+        {LOGO_SVG_HERO}
+        <div class="hero-title">IdeaForge AI</div>
+    </div>
     <div class="hero-subtitle">
         Transform raw application visions into structured, personalized, and technically actionable engineering blueprints through collaborative multi-agent AI reasoning.
     </div>
@@ -269,7 +408,7 @@ if st.session_state.generated_spec is None:
     
     with st.form(key="idea_form"):
         # Section 1: Application Concept
-        st.markdown("<h4 style='color:#818cf8 !important;'>1. Project Concept & Vision (Required)</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color:var(--accent-indigo) !important;'>1. Project Concept & Vision (Required)</h4>", unsafe_allow_html=True)
         idea_input = st.text_area(
             label="Describe your application idea, the problem it addresses, and target goals.",
             placeholder="e.g. An AI platform that matches university students with study partners based on course schedules, learning styles, and assignment deadlines...",
@@ -279,7 +418,7 @@ if st.session_state.generated_spec is None:
 
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown("<h4 style='color:#818cf8 !important;'>2. User Profile & Goal</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:var(--accent-indigo) !important;'>2. User Profile & Goal</h4>", unsafe_allow_html=True)
             user_role = st.selectbox(
                 "Your Experience Level / Role",
                 options=[
@@ -316,7 +455,7 @@ if st.session_state.generated_spec is None:
                 custom_objective = st.text_input("Specify Your Objective")
 
         with col2:
-            st.markdown("<h4 style='color:#818cf8 !important;'>3. Detail Level & Technical Depth</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:var(--accent-indigo) !important;'>3. Detail Level & Technical Depth</h4>", unsafe_allow_html=True)
             spec_level = st.selectbox(
                 "Specification Detail Level",
                 options=["Recommend for me", "Basic", "Intermediate", "Advanced"],
@@ -330,7 +469,7 @@ if st.session_state.generated_spec is None:
                 index=0
             )
 
-        st.markdown("<h4 style='color:#818cf8 !important;'>4. Technology Preferences & Constraints</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color:var(--accent-indigo) !important;'>4. Technology Preferences & Constraints</h4>", unsafe_allow_html=True)
         col_tech1, col_tech2 = st.columns(2)
         
         with col_tech1:
@@ -354,7 +493,7 @@ if st.session_state.generated_spec is None:
             team_size = st.text_input("Team Size", placeholder="e.g. Solo developer, 3 students, 5 engineers")
             budget = st.text_input("Available Budget", placeholder="e.g. Free tier / $0, $500, Enterprise")
 
-        st.markdown("<h4 style='color:#818cf8 !important;'>5. Additional Constraints & Research Options</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color:var(--accent-indigo) !important;'>5. Additional Constraints & Research Options</h4>", unsafe_allow_html=True)
         additional_reqs = st.text_area(
             "Additional Requirements or Constraints (Optional)",
             placeholder="Specify any unique features, security needs, compliance requirements, or preferences...",
@@ -432,9 +571,9 @@ else:
 
     # Executive Summary Box
     st.markdown(f"""
-    <div class="section-card" style="border-left: 4px solid #6366f1;">
-        <h4 style="margin:0 0 0.5rem 0; font-size:1.05rem; color:#818cf8 !important;">Executive Summary</h4>
-        <p style="margin:0; color:#cbd5e1; line-height:1.6;">{spec.executive_summary}</p>
+    <div class="section-card" style="border-left: 4px solid var(--accent-indigo);">
+        <h4 style="margin:0 0 0.5rem 0; font-size:1.05rem; color:var(--accent-indigo) !important;">Executive Summary</h4>
+        <p style="margin:0; color:var(--text-secondary); line-height:1.6;">{spec.executive_summary}</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -523,14 +662,14 @@ else:
                 st.markdown(f"""
                 <div class="feature-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                        <h4 style="margin:0; font-size:1.05rem; color:#f8fafc !important;">{feat.name}</h4>
+                        <h4 style="margin:0; font-size:1.05rem; color:var(--text-primary) !important;">{feat.name}</h4>
                         <div>
                             <span class="{badge_class}">{feat.priority}</span>
                             <span class="{mvp_class}" style="margin-left:6px;">{mvp_label}</span>
                         </div>
                     </div>
-                    <p style="margin:0 0 0.4rem 0; color:#94a3b8; font-size:0.9rem;">{feat.description}</p>
-                    <p style="margin:0; color:#64748b; font-size:0.82rem; font-style:italic;">Rationale: {feat.reasoning}</p>
+                    <p style="margin:0 0 0.4rem 0; color:var(--text-secondary); font-size:0.9rem;">{feat.description}</p>
+                    <p style="margin:0; color:var(--text-muted); font-size:0.82rem; font-style:italic;">Rationale: {feat.reasoning}</p>
                 </div>
                 """, unsafe_allow_html=True)
 
